@@ -1,0 +1,25 @@
+name: Build Spoofer EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Compile
+      run: |
+        cl spoofer.cpp /std:c++17 /EHsc /O2 /MT /link wbemuuid.lib ole32.lib oleaut32.lib uuid.lib advapi32.lib setupapi.lib cfgmgr32.lib netapi32.lib iphlpapi.lib userenv.lib wininet.lib shell32.lib version.lib /OUT:spoofer.exe
+    
+    - name: Upload EXE
+      uses: actions/upload-artifact@v3
+      with:
+        name: spoofer-exe
+        path: spoofer.exe
